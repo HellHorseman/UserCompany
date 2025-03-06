@@ -1,4 +1,4 @@
-package com.example.app.service.impl;
+package com.example.companyservice.controller.service.impl;
 
 import com.example.app.dto.CompanyDto;
 import com.example.app.model.Company;

@@ -1,4 +1,4 @@
-package com.example.app.controller;
+package com.example.companyservice.controller;
 
 import com.example.app.dto.CompanyDto;
 import com.example.app.service.CompanyService;
