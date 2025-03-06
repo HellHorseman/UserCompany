@@ -1,7 +1,7 @@
 package com.example.companyservice.service.impl;
 
-import com.example.app.dto.CompanyDto;
-import com.example.app.model.Company;
+import com.example.companyservice.dto.CompanyDto;
+import com.example.companyservice.model.Company;
 import com.example.companyservice.repository.CompanyRepository;
 import com.example.companyservice.service.CompanyService;
 import lombok.RequiredArgsConstructor;

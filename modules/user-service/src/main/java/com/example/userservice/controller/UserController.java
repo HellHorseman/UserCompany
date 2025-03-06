@@ -1,7 +1,7 @@
 package com.example.userservice.controller;
 
-import com.example.app.dto.UserDto;
-import com.example.app.service.UserService;
+import com.example.userservice.dto.UserDto;
+import com.example.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

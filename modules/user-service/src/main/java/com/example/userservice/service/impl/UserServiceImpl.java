@@ -1,9 +1,9 @@
 package com.example.userservice.service.impl;
 
-import com.example.app.model.User;
-import com.example.app.repository.UserRepository;
-import com.example.app.dto.UserDto;
-import com.example.app.service.UserService;
+import com.example.userservice.model.User;
+import com.example.userservice.repository.UserRepository;
+import com.example.userservice.dto.UserDto;
+import com.example.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
