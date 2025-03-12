@@ -1,5 +1,5 @@
-FROM openjdk:17
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
-COPY target/eureka-server.jar eureka-server.jar
+COPY target/eureka-server.jar app.jar
 EXPOSE 8761
-ENTRYPOINT ["java", "-jar", "eureka-server.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

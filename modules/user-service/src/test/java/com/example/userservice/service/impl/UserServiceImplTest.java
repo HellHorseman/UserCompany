@@ -1,8 +1,8 @@
 package com.example.userservice.service.impl;
 
-import com.example.app.dto.UserDto;
-import com.example.app.model.User;
-import com.example.app.repository.UserRepository;
+import com.example.userservice.dto.UserDto;
+import com.example.userservice.model.User;
+import com.example.userservice.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

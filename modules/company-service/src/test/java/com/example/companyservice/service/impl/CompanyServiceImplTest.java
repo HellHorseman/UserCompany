@@ -1,8 +1,8 @@
-package com.example.companyservice.controller.service.impl;
+package com.example.companyservice.service.impl;
 
-import com.example.app.dto.CompanyDto;
-import com.example.app.model.Company;
-import com.example.app.repository.CompanyRepository;
+import com.example.companyservice.dto.CompanyDto;
+import com.example.companyservice.model.Company;
+import com.example.companyservice.repository.CompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

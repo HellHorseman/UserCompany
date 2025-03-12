@@ -1,7 +1,7 @@
 package com.example.companyservice.controller;
 
-import com.example.app.dto.CompanyDto;
-import com.example.app.service.CompanyService;
+import com.example.companyservice.dto.CompanyDto;
+import com.example.companyservice.service.CompanyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,5 @@
-FROM openjdk:17
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
-COPY target/company-service.jar company-service.jar
+COPY target/company-service.jar app.jar
 EXPOSE 8082
-ENTRYPOINT ["java", "-jar", "company-service.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
