@@ -5,33 +5,25 @@ spring:
   cloud:
     discovery:
       enabled: true
-    application:
+  application:
       name: user-service
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-    register-with-eureka: true
-    fetch-registry: true
-
-feign:
-  hystrix:
-    enabled: true
   datasource:
     url: jdbc:h2:mem:userdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
     password:
-  hikari:
-    minimum-idle: 5
-    maximum-pool-size: 10
-    idle-timeout: 30000
-    max-lifetime: 600000
-    connection-timeout: 30000
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 30000
+      max-lifetime: 600000
+      connection-timeout: 30000
+
   h2:
     console:
       enabled: true
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -43,3 +35,10 @@ feign:
         jdbc.lob.non_contextual_creation: true
         format_sql: true
         globally_quoted_identifiers: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: false
+    fetch-registry: false
