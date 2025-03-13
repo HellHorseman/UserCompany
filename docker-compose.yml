@@ -2,14 +2,14 @@ version: "3.8"
 
 services:
   eureka-server:
-    build: ./eureka-server
+    build: modules/eureka-server
     ports:
       - "8761:8761"
     networks:
       - microservices-net
 
   api-gateway:
-    build: ./api-gateway
+    build: modules/api-gateway
     ports:
       - "8080:8080"
     depends_on:
@@ -20,7 +20,7 @@ services:
       - microservices-net
 
   user-service:
-    build: ./user-service
+    build: modules/user-service
     ports:
       - "8081:8081"
     depends_on:
@@ -31,7 +31,7 @@ services:
       - microservices-net
 
   company-service:
-    build: ./company-service
+    build: modules/company-service
     ports:
       - "8082:8082"
     depends_on:
