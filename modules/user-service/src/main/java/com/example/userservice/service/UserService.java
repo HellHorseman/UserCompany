@@ -6,6 +6,8 @@ import java.util.Optional;
 
 public interface UserService {
     List<UserDto> getAllUsers();
-    Optional<UserDto> getUserById(Long id);
+    UserDto getUserById(Long id);
+    List<UserDto> getUsersByIds(List<Long> ids);
     UserDto saveUser(UserDto userDto);
+
 }

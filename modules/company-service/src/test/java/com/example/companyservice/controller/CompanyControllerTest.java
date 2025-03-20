@@ -2,11 +2,10 @@ package com.example.companyservice.controller;
 
 import com.example.companyservice.dto.CompanyDto;
 import com.example.companyservice.service.CompanyService;
+import com.example.userservice.dto.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -22,7 +20,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CompanyController.class)
-@ExtendWith(MockitoExtension.class)
 class CompanyControllerTest {
 
     @Autowired
@@ -38,7 +35,12 @@ class CompanyControllerTest {
 
     @BeforeEach
     void setUp() {
-        companyDto = new CompanyDto("TestCorp", 100000.0, List.of(1L, 2L, 3L));
+        companyDto = CompanyDto.builder()
+                .id(1L)
+                .name("TestCorp")
+                .budget(100000.0)
+                .employeeIds(List.of(1L, 2L))
+                .build();
     }
 
     @Test
@@ -48,7 +50,10 @@ class CompanyControllerTest {
         mockMvc.perform(get("/companies"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].name").value("TestCorp"));
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value("TestCorp"))
+                .andExpect(jsonPath("$[0].budget").value(100000.0))
+                .andExpect(jsonPath("$[0].employeeIds.size()").value(3));
 
         verify(companyService, times(1)).getAllCompanies();
     }
@@ -65,18 +70,21 @@ class CompanyControllerTest {
 
     @Test
     void getCompanyById_ShouldReturnCompany_WhenExists() throws Exception {
-        when(companyService.getCompanyById(1L)).thenReturn(Optional.of(companyDto));
+        when(companyService.getCompanyById(1L)).thenReturn(companyDto);
 
         mockMvc.perform(get("/companies/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("TestCorp"));
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("TestCorp"))
+                .andExpect(jsonPath("$.budget").value(100000.0))
+                .andExpect(jsonPath("$.employeeIds.size()").value(3));
 
         verify(companyService, times(1)).getCompanyById(1L);
     }
 
     @Test
     void getCompanyById_ShouldReturnNotFound_WhenNotExists() throws Exception {
-        when(companyService.getCompanyById(99L)).thenReturn(Optional.empty());
+        when(companyService.getCompanyById(99L)).thenThrow(new RuntimeException("Company not found"));
 
         mockMvc.perform(get("/companies/99"))
                 .andExpect(status().isNotFound());
@@ -86,18 +94,21 @@ class CompanyControllerTest {
 
     @Test
     void getCompanyByName_ShouldReturnCompany_WhenExists() throws Exception {
-        when(companyService.getCompanyByName("TestCorp")).thenReturn(Optional.of(companyDto));
+        when(companyService.getCompanyByName("TestCorp")).thenReturn(companyDto);
 
         mockMvc.perform(get("/companies/name/TestCorp"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("TestCorp"));
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("TestCorp"))
+                .andExpect(jsonPath("$.budget").value(100000.0))
+                .andExpect(jsonPath("$.employeeIds.size()").value(3));
 
         verify(companyService, times(1)).getCompanyByName("TestCorp");
     }
 
     @Test
     void getCompanyByName_ShouldReturnNotFound_WhenNotExists() throws Exception {
-        when(companyService.getCompanyByName("Unknown")).thenReturn(Optional.empty());
+        when(companyService.getCompanyByName("Unknown")).thenThrow(new RuntimeException("Company not found"));
 
         mockMvc.perform(get("/companies/name/Unknown"))
                 .andExpect(status().isNotFound());
@@ -113,7 +124,10 @@ class CompanyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(companyDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("TestCorp"));
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("TestCorp"))
+                .andExpect(jsonPath("$.budget").value(100000.0))
+                .andExpect(jsonPath("$.employeeIds.size()").value(3));
 
         verify(companyService, times(1)).saveCompany(any(CompanyDto.class));
     }
@@ -128,5 +142,33 @@ class CompanyControllerTest {
                 .andExpect(status().isInternalServerError());
 
         verify(companyService, times(1)).saveCompany(any(CompanyDto.class));
+    }
+
+    @Test
+    void getCompanyWithEmployees_ShouldReturnCompanyWithEmployees() throws Exception {
+        CompanyDto companyWithEmployees = CompanyDto.builder()
+                .id(1L)
+                .name("TestCorp")
+                .budget(100000.0)
+                .employeeIds(List.of(1L, 2L))
+                .employees(List.of(
+                        new UserDto(1L,"John", "Doe", "1234567890"),
+                        new UserDto(2L,"Jane", "Smith", "0987654321")
+                ))
+                .build();
+
+        when(companyService.getCompanyWithEmployees(1L)).thenReturn(companyWithEmployees);
+
+        mockMvc.perform(get("/companies/1/with-employees"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("TestCorp"))
+                .andExpect(jsonPath("$.budget").value(100000.0))
+                .andExpect(jsonPath("$.employeeIds.size()").value(3))
+                .andExpect(jsonPath("$.employees.size()").value(2))
+                .andExpect(jsonPath("$.employees[0].firstName").value("John"))
+                .andExpect(jsonPath("$.employees[1].firstName").value("Jane"));
+
+        verify(companyService, times(1)).getCompanyWithEmployees(1L);
     }
 }

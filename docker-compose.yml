@@ -27,6 +27,12 @@ services:
       - eureka-server
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:h2:mem:userdb
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD:
+      SPRING_H2_CONSOLE_ENABLED: true
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
     networks:
       - microservices-net
 
@@ -38,6 +44,12 @@ services:
       - eureka-server
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:h2:mem:companydb
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD:
+      SPRING_H2_CONSOLE_ENABLED: true
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
     networks:
       - microservices-net
 

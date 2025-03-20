@@ -1,21 +1,16 @@
 package com.example.userservice.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserDto {
-    @NotBlank
+    private Long id;
     private String firstName;
-
-    @NotBlank
     private String lastName;
-
-    @NotBlank
     private String phoneNumber;
 }
 

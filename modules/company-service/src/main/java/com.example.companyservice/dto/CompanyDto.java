@@ -1,16 +1,19 @@
 package com.example.companyservice.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.userservice.dto.UserDto;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CompanyDto {
+    private Long id;
     private String name;
     private Double budget;
-    private List<Long> employees;
+    private List<Long> employeeIds;
+    private List<UserDto> employees;
 }

@@ -1,8 +1,11 @@
 package com.example.companyservice.service.impl;
 
+import com.example.companyservice.client.UserServiceClient;
 import com.example.companyservice.dto.CompanyDto;
+import com.example.companyservice.mapper.CompanyMapper;
 import com.example.companyservice.model.Company;
 import com.example.companyservice.repository.CompanyRepository;
+import com.example.userservice.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +25,12 @@ class CompanyServiceImplTest {
     @Mock
     private CompanyRepository companyRepository;
 
+    @Mock
+    private CompanyMapper companyMapper;
+
+    @Mock
+    private UserServiceClient userServiceClient;
+
     @InjectMocks
     private CompanyServiceImpl companyService;
 
@@ -31,12 +40,13 @@ class CompanyServiceImplTest {
     @BeforeEach
     void setUp() {
         company = new Company(1L, "TestCorp", 100000.0, List.of(1L, 2L, 3L));
-        companyDto = new CompanyDto("TestCorp", 100000.0, List.of(1L, 2L, 3L));
+        companyDto = new CompanyDto(1L, "TestCorp", 100000.0, List.of(1L, 2L, 3L), null);
     }
 
     @Test
     void getAllCompanies_ShouldReturnList() {
         when(companyRepository.findAll()).thenReturn(List.of(company));
+        when(companyMapper.toDtoList(List.of(company))).thenReturn(List.of(companyDto));
 
         List<CompanyDto> companies = companyService.getAllCompanies();
 
@@ -50,47 +60,61 @@ class CompanyServiceImplTest {
     @Test
     void getCompanyById_ShouldReturnCompany_WhenExists() {
         when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
+        when(companyMapper.toDto(company)).thenReturn(companyDto);
 
-        Optional<CompanyDto> result = companyService.getCompanyById(1L);
+        CompanyDto result = companyService.getCompanyById(1L);
 
-        assertTrue(result.isPresent());
-        assertEquals("TestCorp", result.get().getName());
+        assertNotNull(result);
+        assertEquals("TestCorp", result.getName());
 
         verify(companyRepository, times(1)).findById(1L);
     }
 
     @Test
-    void getCompanyById_ShouldReturnEmpty_WhenNotExists() {
-        when(companyRepository.findById(99L)).thenReturn(Optional.empty());
-
-        Optional<CompanyDto> result = companyService.getCompanyById(99L);
-
-        assertTrue(result.isEmpty());
-
-        verify(companyRepository, times(1)).findById(99L);
-    }
-
-    @Test
     void getCompanyByName_ShouldReturnCompany_WhenExists() {
         when(companyRepository.findByName("TestCorp")).thenReturn(Optional.of(company));
+        when(companyMapper.toDto(company)).thenReturn(companyDto);
 
-        Optional<CompanyDto> result = companyService.getCompanyByName("TestCorp");
+        CompanyDto result = companyService.getCompanyByName("TestCorp");
 
-        assertTrue(result.isPresent());
-        assertEquals(100000.0, result.get().getBudget());
+        assertNotNull(result);
+        assertEquals(100000.0, result.getBudget());
 
         verify(companyRepository, times(1)).findByName("TestCorp");
     }
 
     @Test
     void saveCompany_ShouldReturnSavedCompany() {
-        when(companyRepository.save(any(Company.class))).thenReturn(company);
+        when(companyMapper.toEntity(companyDto)).thenReturn(company);
+        when(companyRepository.save(company)).thenReturn(company);
+        when(companyMapper.toDto(company)).thenReturn(companyDto);
 
         CompanyDto savedCompany = companyService.saveCompany(companyDto);
 
         assertNotNull(savedCompany);
         assertEquals("TestCorp", savedCompany.getName());
 
-        verify(companyRepository, times(1)).save(any(Company.class));
+        verify(companyRepository, times(1)).save(company);
+    }
+
+    @Test
+    void getCompanyWithEmployees_ShouldReturnCompanyWithEmployees() {
+        when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
+        when(companyMapper.toDto(company)).thenReturn(companyDto);
+
+        List<UserDto> employees = List.of(
+                new UserDto(1L, "John", "Doe", "1234567890"),
+                new UserDto(2L, "Jane", "Smith", "0987654321")
+        );
+        when(userServiceClient.getUsersByIds(List.of(1L, 2L, 3L))).thenReturn(employees);
+
+        CompanyDto result = companyService.getCompanyWithEmployees(1L);
+
+        assertNotNull(result);
+        assertEquals("TestCorp", result.getName());
+        assertEquals(2, result.getEmployees().size());
+
+        verify(companyRepository, times(1)).findById(1L);
+        verify(userServiceClient, times(1)).getUsersByIds(List.of(1L, 2L, 3L));
     }
 }

@@ -1,51 +1,54 @@
 package com.example.userservice.service.impl;
 
-import com.example.userservice.model.User;
+import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.dto.UserDto;
 import com.example.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    @Override
     public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        List<UserDto> users = userRepository.findAll().stream()
+                .map(userMapper::toDto)
+                .toList();
+        log.info("Found {} users", users.size());
+        return users;
     }
 
-    @Override
-    public Optional<UserDto> getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(this::convertToDto);
+    public UserDto getUserById(Long id) {
+        UserDto user = userRepository.findById(id)
+                .map(userMapper::toDto)
+                .orElseThrow(() -> {
+                    log.warn("User with id {} not found", id);
+                    return new RuntimeException("User not found");
+                });
+        log.info("User found: {}", user);
+        return user;
     }
 
-    @Override
+    public List<UserDto> getUsersByIds(List<Long> ids) {
+        return userRepository.findAllById(ids).stream()
+                .map(user -> new UserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getPhoneNumber()))
+                .toList();
+    }
+
+    @Transactional
     public UserDto saveUser(UserDto userDto) {
-        User user = convertToEntity(userDto);
-        User savedUser = userRepository.save(user);
-        return convertToDto(savedUser);
-    }
-
-    private UserDto convertToDto(User user) {
-        return new UserDto(user.getFirstName(), user.getLastName(), user.getPhoneNumber());
-    }
-
-    private User convertToEntity(UserDto userDto) {
-        return User.builder()
-                .firstName(userDto.getFirstName())
-                .lastName(userDto.getLastName())
-                .phoneNumber(userDto.getPhoneNumber())
-                .build();
+        var user = userMapper.toEntity(userDto);
+        UserDto savedUser = userMapper.toDto(userRepository.save(user));
+        log.info("User created successfully: {}", savedUser);
+        return savedUser;
     }
 }

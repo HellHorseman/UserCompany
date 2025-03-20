@@ -6,7 +6,9 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Data
+@Table(name = "companies")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

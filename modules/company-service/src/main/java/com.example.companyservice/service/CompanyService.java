@@ -10,11 +10,11 @@ public interface CompanyService {
 
     public List<CompanyDto> getAllCompanies();
 
-    public Optional<CompanyDto> getCompanyById(Long id);
+    public CompanyDto getCompanyById(Long id);
 
-    public Optional<CompanyDto> getCompanyByName(String name);
+    public CompanyDto getCompanyByName(String name);
 
     public CompanyDto saveCompany(CompanyDto companyDto);
 
-
+    public CompanyDto getCompanyWithEmployees(Long id);
 }
