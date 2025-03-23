@@ -48,13 +48,15 @@ class UserServiceImplTest {
     @Test
     void shouldReturnAllUsers() {
         when(userRepository.findAll()).thenReturn(List.of(user));
-        when(userMapper.toDtoList(List.of(user))).thenReturn(List.of(userDto));
+        when(userMapper.toDto(user)).thenReturn(userDto);
 
         List<UserDto> users = userService.getAllUsers();
 
         assertThat(users).hasSize(1);
         assertThat(users.get(0)).isEqualTo(userDto);
+
         verify(userRepository, times(1)).findAll();
+        verify(userMapper, times(1)).toDto(user);
     }
 
     @Test

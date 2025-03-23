@@ -1,12 +1,13 @@
 package com.example.userservice.controller;
 
 import com.example.userservice.dto.UserDto;
+import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,14 +25,11 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
     private UserService userService;
 
+    @Autowired
     private ObjectMapper objectMapper;
-
-    @BeforeEach
-    void setUp() {
-        objectMapper = new ObjectMapper();
-    }
 
     @Test
     void shouldReturnListOfUsers() throws Exception {
@@ -70,10 +68,11 @@ class UserControllerTest {
 
     @Test
     void shouldReturnNotFoundForNonExistingUser() throws Exception {
-        when(userService.getUserById(99L)).thenThrow(new RuntimeException("User not found"));
+        when(userService.getUserById(99L)).thenThrow(new UserNotFoundException("User not found"));
 
         mockMvc.perform(get("/users/99"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("User not found"));
 
         verify(userService, times(1)).getUserById(99L);
     }

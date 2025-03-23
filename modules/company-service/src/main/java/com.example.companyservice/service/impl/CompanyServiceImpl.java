@@ -2,6 +2,9 @@ package com.example.companyservice.service.impl;
 
 import com.example.companyservice.client.UserServiceClient;
 import com.example.companyservice.dto.CompanyDto;
+import com.example.companyservice.exception.CompanyNotFoundException;
+import com.example.companyservice.exception.InternalServerErrorException;
+import com.example.companyservice.exception.NoContentException;
 import com.example.companyservice.mapper.CompanyMapper;
 import com.example.companyservice.repository.CompanyRepository;
 import com.example.companyservice.service.CompanyService;
@@ -26,6 +29,9 @@ public class CompanyServiceImpl implements CompanyService {
         List<CompanyDto> companies = companyRepository.findAll().stream()
                 .map(companyMapper::toDto)
                 .toList();
+        if (companies.isEmpty()) {
+            throw new NoContentException("No companies found");
+        }
         log.info("Found {} companies", companies.size());
         return companies;
     }
@@ -35,7 +41,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .map(companyMapper::toDto)
                 .orElseThrow(() -> {
                     log.warn("Company with id {} not found", id);
-                    return new RuntimeException("Company not found");
+                    return new CompanyNotFoundException("Company not found");
                 });
         log.info("Company found: {}", company);
         return company;
@@ -46,7 +52,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .map(companyMapper::toDto)
                 .orElseThrow(() -> {
                     log.warn("Company with name {} not found", name);
-                    return new RuntimeException("Company not found");
+                    return new CompanyNotFoundException("Company not found");
                 });
         log.info("Company found: {}", company);
         return company;
@@ -54,10 +60,15 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Transactional
     public CompanyDto saveCompany(CompanyDto companyDto) {
-        var company = companyMapper.toEntity(companyDto);
-        CompanyDto savedCompany = companyMapper.toDto(companyRepository.save(company));
-        log.info("Company created successfully: {}", savedCompany);
-        return savedCompany;
+        try {
+            var company = companyMapper.toEntity(companyDto);
+            CompanyDto savedCompany = companyMapper.toDto(companyRepository.save(company));
+            log.info("Company created successfully: {}", savedCompany);
+            return savedCompany;
+        } catch (Exception e) {
+            log.error("Error while saving company: {}", e.getMessage());
+            throw new InternalServerErrorException("Database error: " + e.getMessage());
+        }
     }
 
     public CompanyDto getCompanyWithEmployees(Long companyId) {
@@ -65,7 +76,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .map(companyMapper::toDto)
                 .orElseThrow(() -> {
                     log.warn("Company with id {} not found", companyId);
-                    return new RuntimeException("Company not found");
+                    return new CompanyNotFoundException("Company not found");
                 });
 
         List<Long> employeeIds = company.getEmployeeIds();

@@ -46,7 +46,7 @@ class CompanyServiceImplTest {
     @Test
     void getAllCompanies_ShouldReturnList() {
         when(companyRepository.findAll()).thenReturn(List.of(company));
-        when(companyMapper.toDtoList(List.of(company))).thenReturn(List.of(companyDto));
+        when(companyMapper.toDto(company)).thenReturn(companyDto);
 
         List<CompanyDto> companies = companyService.getAllCompanies();
 
@@ -55,6 +55,7 @@ class CompanyServiceImplTest {
         assertEquals("TestCorp", companies.get(0).getName());
 
         verify(companyRepository, times(1)).findAll();
+        verify(companyMapper, times(1)).toDto(company);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.example.userservice.service.impl;
 
+import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.dto.UserDto;
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService{
                 .map(userMapper::toDto)
                 .orElseThrow(() -> {
                     log.warn("User with id {} not found", id);
-                    return new RuntimeException("User not found");
+                    return new UserNotFoundException("User not found");
                 });
         log.info("User found: {}", user);
         return user;
