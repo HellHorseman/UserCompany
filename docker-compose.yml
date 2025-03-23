@@ -3,24 +3,35 @@ version: "3.8"
 services:
   eureka-server:
     build: modules/eureka-server
+    image: eureka-server-image
+    container_name: eureka-server
+    hostname: eureka-server
     ports:
       - "8761:8761"
+    restart: on-failure
     networks:
       - microservices-net
 
   api-gateway:
     build: modules/api-gateway
+    image: api-gateway-image
+    container_name: api-gateway
+    hostname: api-gateway
     ports:
       - "8080:8080"
     depends_on:
       - eureka-server
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    restart: on-failure
     networks:
       - microservices-net
 
   user-service:
     build: modules/user-service
+    image: user-service
+    container_name: user-service
+    hostname: user-service
     ports:
       - "8081:8081"
     depends_on:
@@ -38,6 +49,9 @@ services:
 
   company-service:
     build: modules/company-service
+    image: company-service
+    container_name: company-service
+    hostname: company-service
     ports:
       - "8082:8082"
     depends_on:
