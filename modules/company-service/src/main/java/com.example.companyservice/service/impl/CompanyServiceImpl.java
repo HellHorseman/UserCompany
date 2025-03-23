@@ -8,7 +8,7 @@ import com.example.companyservice.exception.NoContentException;
 import com.example.companyservice.mapper.CompanyMapper;
 import com.example.companyservice.repository.CompanyRepository;
 import com.example.companyservice.service.CompanyService;
-import com.example.userservice.dto.UserDto;
+import com.example.commondto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

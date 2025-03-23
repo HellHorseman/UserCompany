@@ -5,7 +5,7 @@ import com.example.companyservice.exception.CompanyNotFoundException;
 import com.example.companyservice.exception.InternalServerErrorException;
 import com.example.companyservice.exception.NoContentException;
 import com.example.companyservice.service.CompanyService;
-import com.example.userservice.dto.UserDto;
+import com.example.commondto.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

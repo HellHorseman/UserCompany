@@ -1,6 +1,6 @@
 package com.example.userservice.controller;
 
-import com.example.userservice.dto.UserDto;
+import com.example.commondto.UserDto;
 import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;

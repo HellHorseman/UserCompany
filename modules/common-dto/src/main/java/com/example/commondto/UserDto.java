@@ -1,4 +1,4 @@
-package com.example.userservice.dto;
+package com.example.commondto;
 
 import lombok.*;
 
@@ -13,4 +13,3 @@ public class UserDto {
     private String lastName;
     private String phoneNumber;
 }
-

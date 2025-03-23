@@ -5,7 +5,7 @@ import com.example.companyservice.dto.CompanyDto;
 import com.example.companyservice.mapper.CompanyMapper;
 import com.example.companyservice.model.Company;
 import com.example.companyservice.repository.CompanyRepository;
-import com.example.userservice.dto.UserDto;
+import com.example.commondto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,6 +1,6 @@
 package com.example.companyservice.dto;
 
-import com.example.userservice.dto.UserDto;
+import com.example.commondto.UserDto;
 import lombok.*;
 
 import java.util.List;

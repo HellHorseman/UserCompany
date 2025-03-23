@@ -3,7 +3,7 @@ package com.example.userservice.service.impl;
 import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.repository.UserRepository;
-import com.example.userservice.dto.UserDto;
+import com.example.commondto.UserDto;
 import com.example.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
