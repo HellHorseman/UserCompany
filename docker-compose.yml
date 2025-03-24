@@ -1,11 +1,41 @@
 version: "3.8"
 
 services:
+  postgres-user:
+    image: postgres:15
+    container_name: postgres-user
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: userdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-user-data:/var/lib/postgresql/data
+    networks:
+      - microservices-net
+
+  postgres-company:
+    image: postgres:15
+    container_name: postgres-company
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: companydb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-company-data:/var/lib/postgresql/data
+    networks:
+      - microservices-net
+
   eureka-server:
     build: modules/eureka-server
     image: eureka-server-image
     container_name: eureka-server
     hostname: eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8761:8761"
     restart: on-failure
@@ -22,6 +52,7 @@ services:
     depends_on:
       - eureka-server
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
     restart: on-failure
     networks:
@@ -36,14 +67,14 @@ services:
       - "8081:8081"
     depends_on:
       - eureka-server
+      - postgres-user
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:h2:mem:userdb
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
-      SPRING_DATASOURCE_USERNAME: sa
-      SPRING_DATASOURCE_PASSWORD:
-      SPRING_H2_CONSOLE_ENABLED: true
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/userdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
     networks:
       - microservices-net
 
@@ -56,17 +87,21 @@ services:
       - "8082:8082"
     depends_on:
       - eureka-server
+      - postgres-company
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:h2:mem:companydb
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
-      SPRING_DATASOURCE_USERNAME: sa
-      SPRING_DATASOURCE_PASSWORD:
-      SPRING_H2_CONSOLE_ENABLED: true
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-company:5432/companydb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
     networks:
       - microservices-net
 
 networks:
   microservices-net:
     driver: bridge
+
+volumes:
+  postgres-user-data:
+  postgres-company-data:

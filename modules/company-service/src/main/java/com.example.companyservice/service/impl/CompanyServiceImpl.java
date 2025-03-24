@@ -1,7 +1,7 @@
 package com.example.companyservice.service.impl;
 
 import com.example.companyservice.client.UserServiceClient;
-import com.example.companyservice.dto.CompanyDto;
+import com.example.commondto.CompanyDto;
 import com.example.companyservice.exception.CompanyNotFoundException;
 import com.example.companyservice.exception.InternalServerErrorException;
 import com.example.companyservice.exception.NoContentException;
@@ -14,7 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -75,19 +78,27 @@ public class CompanyServiceImpl implements CompanyService {
         CompanyDto company = companyRepository.findById(companyId)
                 .map(companyMapper::toDto)
                 .orElseThrow(() -> {
-                    log.warn("Company with id {} not found", companyId);
-                    return new CompanyNotFoundException("Company not found");
+                    log.warn("Компания с id {} не найдена", companyId);
+                    return new CompanyNotFoundException("Компания не найдена");
                 });
 
-        List<Long> employeeIds = company.getEmployeeIds();
-        log.info("Fetching employees for company {} with IDs: {}", companyId, employeeIds);
+        Set<Long> employeeIdsSet = company.getEmployeeIds();
 
-        List<UserDto> employees = userServiceClient.getUsersByIds(employeeIds);
-        log.info("Fetched {} employees for company {}", employees.size(), companyId);
+        if (employeeIdsSet == null || employeeIdsSet.isEmpty()) {
+            log.info("У компании {} нет сотрудников", companyId);
+            company.setEmployees(Collections.emptyList());
+            return company;
+        }
+
+        List<Long> employeeIdsList = new ArrayList<>(employeeIdsSet);
+
+        log.info("Запрашиваем сотрудников компании {} с IDs: {}", companyId, employeeIdsList);
+        List<UserDto> employees = userServiceClient.getUsersByIds(employeeIdsList);
+        log.info("Получено {} сотрудников для компании {}", employees.size(), companyId);
 
         company.setEmployees(employees);
+        log.debug("Сотрудники компании {}: {}", companyId, employees);
 
-        log.info("Company with employees: {}", company);
         return company;
     }
 }

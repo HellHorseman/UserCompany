@@ -1,6 +1,6 @@
 package com.example.companyservice.mapper;
 
-import com.example.companyservice.dto.CompanyDto;
+import com.example.commondto.CompanyDto;
 import com.example.companyservice.model.Company;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

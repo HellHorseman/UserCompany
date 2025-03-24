@@ -1,9 +1,9 @@
-package com.example.companyservice.dto;
+package com.example.commondto;
 
-import com.example.commondto.UserDto;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -14,6 +14,7 @@ public class CompanyDto {
     private Long id;
     private String name;
     private Double budget;
-    private List<Long> employeeIds;
+    private String description;
+    private Set<Long> employeeIds;
     private List<UserDto> employees;
 }

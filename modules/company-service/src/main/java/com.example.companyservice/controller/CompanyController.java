@@ -1,12 +1,13 @@
 package com.example.companyservice.controller;
 
-import com.example.companyservice.dto.CompanyDto;
+import com.example.commondto.CompanyDto;
 import com.example.companyservice.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @Slf4j
 @RestController

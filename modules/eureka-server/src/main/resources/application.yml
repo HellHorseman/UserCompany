@@ -7,6 +7,8 @@ spring:
   cloud:
     config:
       enabled: false
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 eureka:
   instance:
