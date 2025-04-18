@@ -1,4 +1,4 @@
-package com.example.commondto;
+package com.example.commondto.userDtos;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDto {
+public class EmployeeDto {
     private Long id;
     private String firstName;
     private String lastName;

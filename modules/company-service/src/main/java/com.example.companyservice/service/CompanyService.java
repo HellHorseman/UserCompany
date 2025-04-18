@@ -1,18 +1,20 @@
 package com.example.companyservice.service;
 
-import com.example.commondto.CompanyDto;
-
-import java.util.List;
+import com.example.commondto.companyDtos.CompanyRequestDto;
+import com.example.commondto.companyDtos.CompanyResponseDto;
+import com.example.commondto.companyDtos.CompanyWithEmployeesDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CompanyService {
 
-    List<CompanyDto> getAllCompanies();
+    Page<CompanyResponseDto> getAllCompanies(Pageable pageable);
 
-    CompanyDto getCompanyById(Long id);
+    CompanyResponseDto getCompanyById(Long id);
 
-    CompanyDto getCompanyByName(String name);
+    CompanyResponseDto getCompanyByName(String name);
 
-    CompanyDto saveCompany(CompanyDto companyDto);
+    CompanyResponseDto createCompany(CompanyRequestDto requestDto);
 
-    CompanyDto getCompanyWithEmployees(Long id);
+    CompanyWithEmployeesDto getCompanyWithEmployees(Long companyId);
 }
